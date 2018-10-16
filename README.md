@@ -45,17 +45,217 @@ cur = conn.cursor()
 ```python
 cur.execute('select * from offices;')
 df = pd.DataFrame(cur.fetchall())
+df.columns = [i[0] for i in cur.description]
 print('Number of results:', len(df))
 df.head()
 ```
+
+    Number of results: 7
+
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>officeCode</th>
+      <th>city</th>
+      <th>phone</th>
+      <th>addressLine1</th>
+      <th>addressLine2</th>
+      <th>state</th>
+      <th>country</th>
+      <th>postalCode</th>
+      <th>territory</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>San Francisco</td>
+      <td>+1 650 219 4782</td>
+      <td>100 Market Street</td>
+      <td>Suite 300</td>
+      <td>CA</td>
+      <td>USA</td>
+      <td>94080</td>
+      <td>NA</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>Boston</td>
+      <td>+1 215 837 0825</td>
+      <td>1550 Court Place</td>
+      <td>Suite 102</td>
+      <td>MA</td>
+      <td>USA</td>
+      <td>02107</td>
+      <td>NA</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>NYC</td>
+      <td>+1 212 555 3000</td>
+      <td>523 East 53rd Street</td>
+      <td>apt. 5A</td>
+      <td>NY</td>
+      <td>USA</td>
+      <td>10022</td>
+      <td>NA</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>Paris</td>
+      <td>+33 14 723 4404</td>
+      <td>43 Rue Jouffroy D'abbans</td>
+      <td></td>
+      <td></td>
+      <td>France</td>
+      <td>75017</td>
+      <td>EMEA</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>Tokyo</td>
+      <td>+81 33 224 5000</td>
+      <td>4-1 Kioicho</td>
+      <td></td>
+      <td>Chiyoda-Ku</td>
+      <td>Japan</td>
+      <td>102-8578</td>
+      <td>Japan</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 
 
 ```python
 cur.execute('select * from employees;')
 df = pd.DataFrame(cur.fetchall())
+df.columns = [i[0] for i in cur.description]
 print('Number of results:', len(df))
 df.head()
 ```
+
+    Number of results: 23
+
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>employeeNumber</th>
+      <th>lastName</th>
+      <th>firstName</th>
+      <th>extension</th>
+      <th>email</th>
+      <th>officeCode</th>
+      <th>reportsTo</th>
+      <th>jobTitle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1002</td>
+      <td>Murphy</td>
+      <td>Diane</td>
+      <td>x5800</td>
+      <td>dmurphy@classicmodelcars.com</td>
+      <td>1</td>
+      <td></td>
+      <td>President</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1056</td>
+      <td>Patterson</td>
+      <td>Mary</td>
+      <td>x4611</td>
+      <td>mpatterso@classicmodelcars.com</td>
+      <td>1</td>
+      <td>1002</td>
+      <td>VP Sales</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1076</td>
+      <td>Firrelli</td>
+      <td>Jeff</td>
+      <td>x9273</td>
+      <td>jfirrelli@classicmodelcars.com</td>
+      <td>1</td>
+      <td>1002</td>
+      <td>VP Marketing</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1088</td>
+      <td>Patterson</td>
+      <td>William</td>
+      <td>x4871</td>
+      <td>wpatterson@classicmodelcars.com</td>
+      <td>6</td>
+      <td>1056</td>
+      <td>Sales Manager (APAC)</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1102</td>
+      <td>Bondur</td>
+      <td>Gerard</td>
+      <td>x5408</td>
+      <td>gbondur@classicmodelcars.com</td>
+      <td>4</td>
+      <td>1056</td>
+      <td>Sale Manager (EMEA)</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 
 ### A One-to-One Join...
 
@@ -63,9 +263,154 @@ df.head()
 ```python
 cur.execute('select * from offices join employees using(officeCode);')
 df = pd.DataFrame(cur.fetchall())
+df.columns = [i[0] for i in cur.description]
 print('Number of results:', len(df))
 df.head()
 ```
+
+    Number of results: 23
+
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>officeCode</th>
+      <th>city</th>
+      <th>phone</th>
+      <th>addressLine1</th>
+      <th>addressLine2</th>
+      <th>state</th>
+      <th>country</th>
+      <th>postalCode</th>
+      <th>territory</th>
+      <th>employeeNumber</th>
+      <th>lastName</th>
+      <th>firstName</th>
+      <th>extension</th>
+      <th>email</th>
+      <th>reportsTo</th>
+      <th>jobTitle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>San Francisco</td>
+      <td>+1 650 219 4782</td>
+      <td>100 Market Street</td>
+      <td>Suite 300</td>
+      <td>CA</td>
+      <td>USA</td>
+      <td>94080</td>
+      <td>NA</td>
+      <td>1002</td>
+      <td>Murphy</td>
+      <td>Diane</td>
+      <td>x5800</td>
+      <td>dmurphy@classicmodelcars.com</td>
+      <td></td>
+      <td>President</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>San Francisco</td>
+      <td>+1 650 219 4782</td>
+      <td>100 Market Street</td>
+      <td>Suite 300</td>
+      <td>CA</td>
+      <td>USA</td>
+      <td>94080</td>
+      <td>NA</td>
+      <td>1056</td>
+      <td>Patterson</td>
+      <td>Mary</td>
+      <td>x4611</td>
+      <td>mpatterso@classicmodelcars.com</td>
+      <td>1002</td>
+      <td>VP Sales</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1</td>
+      <td>San Francisco</td>
+      <td>+1 650 219 4782</td>
+      <td>100 Market Street</td>
+      <td>Suite 300</td>
+      <td>CA</td>
+      <td>USA</td>
+      <td>94080</td>
+      <td>NA</td>
+      <td>1076</td>
+      <td>Firrelli</td>
+      <td>Jeff</td>
+      <td>x9273</td>
+      <td>jfirrelli@classicmodelcars.com</td>
+      <td>1002</td>
+      <td>VP Marketing</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1</td>
+      <td>San Francisco</td>
+      <td>+1 650 219 4782</td>
+      <td>100 Market Street</td>
+      <td>Suite 300</td>
+      <td>CA</td>
+      <td>USA</td>
+      <td>94080</td>
+      <td>NA</td>
+      <td>1143</td>
+      <td>Bow</td>
+      <td>Anthony</td>
+      <td>x5428</td>
+      <td>abow@classicmodelcars.com</td>
+      <td>1056</td>
+      <td>Sales Manager (NA)</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1</td>
+      <td>San Francisco</td>
+      <td>+1 650 219 4782</td>
+      <td>100 Market Street</td>
+      <td>Suite 300</td>
+      <td>CA</td>
+      <td>USA</td>
+      <td>94080</td>
+      <td>NA</td>
+      <td>1165</td>
+      <td>Jennings</td>
+      <td>Leslie</td>
+      <td>x3291</td>
+      <td>ljennings@classicmodelcars.com</td>
+      <td>1143</td>
+      <td>Sales Rep</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 
 ### A One-to-Many Join
 Here we join products with product lines. There are only a few product lines that will be matched to each product. As a result, the product line descriptions will be repeated in our resulting view.
@@ -74,17 +419,193 @@ Here we join products with product lines. There are only a few product lines tha
 ```python
 cur.execute('select * from products;')
 df = pd.DataFrame(cur.fetchall())
+df.columns = [i[0] for i in cur.description]
 print('Number of results:', len(df))
 df.head()
 ```
+
+    Number of results: 110
+
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>productCode</th>
+      <th>productName</th>
+      <th>productLine</th>
+      <th>productScale</th>
+      <th>productVendor</th>
+      <th>productDescription</th>
+      <th>quantityInStock</th>
+      <th>buyPrice</th>
+      <th>MSRP</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>S10_1678</td>
+      <td>1969 Harley Davidson Ultimate Chopper</td>
+      <td>Motorcycles</td>
+      <td>1:10</td>
+      <td>Min Lin Diecast</td>
+      <td>This replica features working kickstand, front...</td>
+      <td>7933</td>
+      <td>48.81</td>
+      <td>95.70</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>S10_1949</td>
+      <td>1952 Alpine Renault 1300</td>
+      <td>Classic Cars</td>
+      <td>1:10</td>
+      <td>Classic Metal Creations</td>
+      <td>Turnable front wheels; steering function; deta...</td>
+      <td>7305</td>
+      <td>98.58</td>
+      <td>214.30</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>S10_2016</td>
+      <td>1996 Moto Guzzi 1100i</td>
+      <td>Motorcycles</td>
+      <td>1:10</td>
+      <td>Highway 66 Mini Classics</td>
+      <td>Official Moto Guzzi logos and insignias, saddl...</td>
+      <td>6625</td>
+      <td>68.99</td>
+      <td>118.94</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>S10_4698</td>
+      <td>2003 Harley-Davidson Eagle Drag Bike</td>
+      <td>Motorcycles</td>
+      <td>1:10</td>
+      <td>Red Start Diecast</td>
+      <td>Model features, official Harley Davidson logos...</td>
+      <td>5582</td>
+      <td>91.02</td>
+      <td>193.66</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>S10_4757</td>
+      <td>1972 Alfa Romeo GTA</td>
+      <td>Classic Cars</td>
+      <td>1:10</td>
+      <td>Motor City Art Classics</td>
+      <td>Features include: Turnable front wheels; steer...</td>
+      <td>3252</td>
+      <td>85.68</td>
+      <td>136.00</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 
 
 ```python
 cur.execute('select * from productlines;')
 df = pd.DataFrame(cur.fetchall())
+df.columns = [i[0] for i in cur.description]
 print('Number of results:', len(df))
 df.head()
 ```
+
+    Number of results: 7
+
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>productLine</th>
+      <th>textDescription</th>
+      <th>htmlDescription</th>
+      <th>image</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Classic Cars</td>
+      <td>Attention car enthusiasts: Make your wildest c...</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Motorcycles</td>
+      <td>Our motorcycles are state of the art replicas ...</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Planes</td>
+      <td>Unique, diecast airplane and helicopter replic...</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Ships</td>
+      <td>The perfect holiday or anniversary gift for ex...</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Trains</td>
+      <td>Model trains are a rewarding hobby for enthusi...</td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 
 
 ```python
@@ -92,9 +613,130 @@ cur.execute("""select * from products
                       join productlines
                       using(productLine);""")
 df = pd.DataFrame(cur.fetchall())
+df.columns = [i[0] for i in cur.description]
 print('Number of results:', len(df))
 df.head()
 ```
+
+    Number of results: 110
+
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>productCode</th>
+      <th>productName</th>
+      <th>productLine</th>
+      <th>productScale</th>
+      <th>productVendor</th>
+      <th>productDescription</th>
+      <th>quantityInStock</th>
+      <th>buyPrice</th>
+      <th>MSRP</th>
+      <th>textDescription</th>
+      <th>htmlDescription</th>
+      <th>image</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>S10_1678</td>
+      <td>1969 Harley Davidson Ultimate Chopper</td>
+      <td>Motorcycles</td>
+      <td>1:10</td>
+      <td>Min Lin Diecast</td>
+      <td>This replica features working kickstand, front...</td>
+      <td>7933</td>
+      <td>48.81</td>
+      <td>95.70</td>
+      <td>Our motorcycles are state of the art replicas ...</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>S10_1949</td>
+      <td>1952 Alpine Renault 1300</td>
+      <td>Classic Cars</td>
+      <td>1:10</td>
+      <td>Classic Metal Creations</td>
+      <td>Turnable front wheels; steering function; deta...</td>
+      <td>7305</td>
+      <td>98.58</td>
+      <td>214.30</td>
+      <td>Attention car enthusiasts: Make your wildest c...</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>S10_2016</td>
+      <td>1996 Moto Guzzi 1100i</td>
+      <td>Motorcycles</td>
+      <td>1:10</td>
+      <td>Highway 66 Mini Classics</td>
+      <td>Official Moto Guzzi logos and insignias, saddl...</td>
+      <td>6625</td>
+      <td>68.99</td>
+      <td>118.94</td>
+      <td>Our motorcycles are state of the art replicas ...</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>S10_4698</td>
+      <td>2003 Harley-Davidson Eagle Drag Bike</td>
+      <td>Motorcycles</td>
+      <td>1:10</td>
+      <td>Red Start Diecast</td>
+      <td>Model features, official Harley Davidson logos...</td>
+      <td>5582</td>
+      <td>91.02</td>
+      <td>193.66</td>
+      <td>Our motorcycles are state of the art replicas ...</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>S10_4757</td>
+      <td>1972 Alfa Romeo GTA</td>
+      <td>Classic Cars</td>
+      <td>1:10</td>
+      <td>Motor City Art Classics</td>
+      <td>Features include: Turnable front wheels; steer...</td>
+      <td>3252</td>
+      <td>85.68</td>
+      <td>136.00</td>
+      <td>Attention car enthusiasts: Make your wildest c...</td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 
 ### A Many-to-Many Join
 
@@ -109,25 +751,425 @@ cur.execute("""select * from employees
                         join customers
                         using(city);""")
 df = pd.DataFrame(cur.fetchall())
+df.columns = [i[0] for i in cur.description]
 print('Number of results:', len(df))
 df.head()
 ```
+
+    Number of results: 45
+
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>employeeNumber</th>
+      <th>lastName</th>
+      <th>firstName</th>
+      <th>extension</th>
+      <th>email</th>
+      <th>officeCode</th>
+      <th>reportsTo</th>
+      <th>jobTitle</th>
+      <th>city</th>
+      <th>phone</th>
+      <th>...</th>
+      <th>contactLastName</th>
+      <th>contactFirstName</th>
+      <th>phone</th>
+      <th>addressLine1</th>
+      <th>addressLine2</th>
+      <th>state</th>
+      <th>postalCode</th>
+      <th>country</th>
+      <th>salesRepEmployeeNumber</th>
+      <th>creditLimit</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1002</td>
+      <td>Murphy</td>
+      <td>Diane</td>
+      <td>x5800</td>
+      <td>dmurphy@classicmodelcars.com</td>
+      <td>1</td>
+      <td></td>
+      <td>President</td>
+      <td>San Francisco</td>
+      <td>+1 650 219 4782</td>
+      <td>...</td>
+      <td>Murphy</td>
+      <td>Julie</td>
+      <td>6505555787</td>
+      <td>5557 North Pendale Street</td>
+      <td></td>
+      <td>CA</td>
+      <td>94217</td>
+      <td>USA</td>
+      <td>1165</td>
+      <td>64600.00</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1002</td>
+      <td>Murphy</td>
+      <td>Diane</td>
+      <td>x5800</td>
+      <td>dmurphy@classicmodelcars.com</td>
+      <td>1</td>
+      <td></td>
+      <td>President</td>
+      <td>San Francisco</td>
+      <td>+1 650 219 4782</td>
+      <td>...</td>
+      <td>Brown</td>
+      <td>Julie</td>
+      <td>6505551386</td>
+      <td>7734 Strong St.</td>
+      <td></td>
+      <td>CA</td>
+      <td>94217</td>
+      <td>USA</td>
+      <td>1165</td>
+      <td>105000.00</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1056</td>
+      <td>Patterson</td>
+      <td>Mary</td>
+      <td>x4611</td>
+      <td>mpatterso@classicmodelcars.com</td>
+      <td>1</td>
+      <td>1002</td>
+      <td>VP Sales</td>
+      <td>San Francisco</td>
+      <td>+1 650 219 4782</td>
+      <td>...</td>
+      <td>Murphy</td>
+      <td>Julie</td>
+      <td>6505555787</td>
+      <td>5557 North Pendale Street</td>
+      <td></td>
+      <td>CA</td>
+      <td>94217</td>
+      <td>USA</td>
+      <td>1165</td>
+      <td>64600.00</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1056</td>
+      <td>Patterson</td>
+      <td>Mary</td>
+      <td>x4611</td>
+      <td>mpatterso@classicmodelcars.com</td>
+      <td>1</td>
+      <td>1002</td>
+      <td>VP Sales</td>
+      <td>San Francisco</td>
+      <td>+1 650 219 4782</td>
+      <td>...</td>
+      <td>Brown</td>
+      <td>Julie</td>
+      <td>6505551386</td>
+      <td>7734 Strong St.</td>
+      <td></td>
+      <td>CA</td>
+      <td>94217</td>
+      <td>USA</td>
+      <td>1165</td>
+      <td>105000.00</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1076</td>
+      <td>Firrelli</td>
+      <td>Jeff</td>
+      <td>x9273</td>
+      <td>jfirrelli@classicmodelcars.com</td>
+      <td>1</td>
+      <td>1002</td>
+      <td>VP Marketing</td>
+      <td>San Francisco</td>
+      <td>+1 650 219 4782</td>
+      <td>...</td>
+      <td>Murphy</td>
+      <td>Julie</td>
+      <td>6505555787</td>
+      <td>5557 North Pendale Street</td>
+      <td></td>
+      <td>CA</td>
+      <td>94217</td>
+      <td>USA</td>
+      <td>1165</td>
+      <td>64600.00</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 28 columns</p>
+</div>
+
+
 
 
 ```python
 cur.execute("""select * from employees;""")
 df = pd.DataFrame(cur.fetchall())
+df.columns = [i[0] for i in cur.description]
 print('Number of results:', len(df))
 df.head()
 ```
+
+    Number of results: 23
+
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>employeeNumber</th>
+      <th>lastName</th>
+      <th>firstName</th>
+      <th>extension</th>
+      <th>email</th>
+      <th>officeCode</th>
+      <th>reportsTo</th>
+      <th>jobTitle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1002</td>
+      <td>Murphy</td>
+      <td>Diane</td>
+      <td>x5800</td>
+      <td>dmurphy@classicmodelcars.com</td>
+      <td>1</td>
+      <td></td>
+      <td>President</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1056</td>
+      <td>Patterson</td>
+      <td>Mary</td>
+      <td>x4611</td>
+      <td>mpatterso@classicmodelcars.com</td>
+      <td>1</td>
+      <td>1002</td>
+      <td>VP Sales</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1076</td>
+      <td>Firrelli</td>
+      <td>Jeff</td>
+      <td>x9273</td>
+      <td>jfirrelli@classicmodelcars.com</td>
+      <td>1</td>
+      <td>1002</td>
+      <td>VP Marketing</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1088</td>
+      <td>Patterson</td>
+      <td>William</td>
+      <td>x4871</td>
+      <td>wpatterson@classicmodelcars.com</td>
+      <td>6</td>
+      <td>1056</td>
+      <td>Sales Manager (APAC)</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1102</td>
+      <td>Bondur</td>
+      <td>Gerard</td>
+      <td>x5408</td>
+      <td>gbondur@classicmodelcars.com</td>
+      <td>4</td>
+      <td>1056</td>
+      <td>Sale Manager (EMEA)</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 
 
 ```python
 cur.execute("""select * from customers;""")
 df = pd.DataFrame(cur.fetchall())
+df.columns = [i[0] for i in cur.description]
 print('Number of results:', len(df))
 df.head()
 ```
+
+    Number of results: 122
+
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>customerNumber</th>
+      <th>customerName</th>
+      <th>contactLastName</th>
+      <th>contactFirstName</th>
+      <th>phone</th>
+      <th>addressLine1</th>
+      <th>addressLine2</th>
+      <th>city</th>
+      <th>state</th>
+      <th>postalCode</th>
+      <th>country</th>
+      <th>salesRepEmployeeNumber</th>
+      <th>creditLimit</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>103</td>
+      <td>Atelier graphique</td>
+      <td>Schmitt</td>
+      <td>Carine</td>
+      <td>40.32.2555</td>
+      <td>54, rue Royale</td>
+      <td></td>
+      <td>Nantes</td>
+      <td></td>
+      <td>44000</td>
+      <td>France</td>
+      <td>1370</td>
+      <td>21000.00</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>112</td>
+      <td>Signal Gift Stores</td>
+      <td>King</td>
+      <td>Jean</td>
+      <td>7025551838</td>
+      <td>8489 Strong St.</td>
+      <td></td>
+      <td>Las Vegas</td>
+      <td>NV</td>
+      <td>83030</td>
+      <td>USA</td>
+      <td>1166</td>
+      <td>71800.00</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>114</td>
+      <td>Australian Collectors, Co.</td>
+      <td>Ferguson</td>
+      <td>Peter</td>
+      <td>03 9520 4555</td>
+      <td>636 St Kilda Road</td>
+      <td>Level 3</td>
+      <td>Melbourne</td>
+      <td>Victoria</td>
+      <td>3004</td>
+      <td>Australia</td>
+      <td>1611</td>
+      <td>117300.00</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>119</td>
+      <td>La Rochelle Gifts</td>
+      <td>Labrune</td>
+      <td>Janine</td>
+      <td>40.67.8555</td>
+      <td>67, rue des Cinquante Otages</td>
+      <td></td>
+      <td>Nantes</td>
+      <td></td>
+      <td>44000</td>
+      <td>France</td>
+      <td>1370</td>
+      <td>118200.00</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>121</td>
+      <td>Baane Mini Imports</td>
+      <td>Bergulfsen</td>
+      <td>Jonas</td>
+      <td>07-98 9555</td>
+      <td>Erling Skakkes gate 78</td>
+      <td></td>
+      <td>Stavern</td>
+      <td></td>
+      <td>4110</td>
+      <td>Norway</td>
+      <td>1504</td>
+      <td>81700.00</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 
 ## Summary
 

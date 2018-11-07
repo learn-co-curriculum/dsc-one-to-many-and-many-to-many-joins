@@ -741,7 +741,7 @@ df.head()
 ### A Many-to-Many Join
 
 If we join the employees and offices table, we will have a view with repeat cities listed.
-(Recall this was 23 rows, one for each employee. Joining this with the customer table on the cities column will cause us to have a huge number of rows, one for each employee and customer combination for a given city.)
+(Recall this was 23 rows, one for each employee. Joining this with the customer table on the cities column could cause us to have a huge number of rows, one for each employee and customer combination for a given city.) In this particular example, our results are limited as this mock database is much smaller then is apt to happen in practice. However, it is important to conceptualize the potential impact of ill conceived joins, as severe load can be put on the database causing slow execution time, and potentially even tying up database resources for other analysts who may be using the system.
 
 
 ```python

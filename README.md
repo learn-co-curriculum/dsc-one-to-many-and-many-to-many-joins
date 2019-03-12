@@ -9,17 +9,17 @@ Previously, you've learned about the typical case where one joins on a primary o
 
 You will be able to:
 
-- Explain why Join Tables are needed in Many-to-Many relationships
+- Explain why join Tables are needed in Many-to-Many relationships
 
 ## One-to-Many and Many-to-Many relationships
 
-We've looked at a couple kinds of different join statements: left joins and inner joins. Both of these refer to the way in which we would like to define our joins based on the tables and their shared information. Another perspective on this is the number of matches between the tables based on our defined links with the keywords *on* or *using*.
+So far, you've seen a couple different kinds of join statements: left joins and inner joins. Both of these refer to the way in which you would like to define your joins based on the tables and their shared information. Another perspective on this is the number of matches between the tables based on your defined links with the keywords *on* or *using*.
   
-We've investigated the typical case where one joins on a primary or foreign key. For example, when we join on customerID or employeeID, this value should be unique to that table. As such, our joins have been very similar to using a dictionary to find additional information associated with that record. In cases where there are multiple entries, in either table, for the field you are joining on, you will similarly be given multiple rows in your resulting view, one for each of these entries.  
+You have also seen the typical case where one joins on a primary or foreign key. For example, when you join on customerID or employeeID, this value should be unique to that table. As such, your joins have been very similar to using a dictionary to find additional information associated with that record. In cases where there are multiple entries, in either table, for the field you are joining on, you will similarly be given multiple rows in your resulting view, one for each of these entries.  
   
-For example, let's say you have another table 'restaurants' that has many columns including *name*, *city*, and *rating*. If you were to join this table with the offices table using the shared city column, you might get some unexpected behavior. That is, in the office table, there is only one office per city. However, because there is apt to be more then one restaurant for each of these cities in our second table, we will get unique combinations of Offices and Restaurants from our join. If there are 513 restaurants for Boston in our restaurant table and 1 office for Boston, our joined table will have each of these 513 rows, one for each restaurant along with the one office.
+For example, let's say you have another table 'restaurants' that has many columns including *name*, *city*, and *rating*. If you were to join this table with the offices table using the shared city column, you might get some unexpected behavior. That is, in the office table, there is only one office per city. However, because there is apt to be more then one restaurant for each of these cities in your second table, you will get unique combinations of Offices and Restaurants from your join. If there are 513 restaurants for Boston in your restaurant table and 1 office for Boston, your joined table will have each of these 513 rows, one for each restaurant along with the one office.
 
-If we had 2 offices for Boston, and 513 restaurants, our join would have 1026 rows for boston; 513 for each restuarant along with the first office and 513 for each restaurant with the second office. Three offices in Boston would similarly produce 1539 rows; one for each unique combination of restaurants and offices. This is where you should be particularly careful of many to many joins as the resulting set size can explode drastically potentially consuming vast amounts of memory and other resources.  
+If you had 2 offices for Boston, and 513 restaurants, your join would have 1026 rows for boston; 513 for each restuarant along with the first office and 513 for each restaurant with the second office. Three offices in Boston would similarly produce 1539 rows; one for each unique combination of restaurants and offices. This is where you should be particularly careful of many to many joins as the resulting set size can explode drastically potentially consuming vast amounts of memory and other resources.  
 
 <img src='Database-Schema.png' width=550>
 
@@ -50,7 +50,7 @@ print('Number of results:', len(df))
 df.head()
 ```
 
-    Number of results: 7
+    Number of results: 8
 
 
 
@@ -413,7 +413,7 @@ df.head()
 
 
 ### A One-to-Many Join
-Here we join products with product lines. There are only a few product lines that will be matched to each product. As a result, the product line descriptions will be repeated in our resulting view.
+Here you join products with product lines. There are only a few product lines that will be matched to each product. As a result, the product line descriptions will be repeated in your resulting view.
 
 
 ```python
@@ -740,23 +740,20 @@ df.head()
 
 ### A Many-to-Many Join
 
-If we join the employees and offices table, we will have a view with repeat cities listed.
-(Recall this was 23 rows, one for each employee. Joining this with the customer table on the cities column could cause us to have a huge number of rows, one for each employee and customer combination for a given city.) In this particular example, our results are limited as this mock database is much smaller then is apt to happen in practice. However, it is important to conceptualize the potential impact of ill conceived joins, as severe load can be put on the database causing slow execution time, and potentially even tying up database resources for other analysts who may be using the system.
+A many-to-many join is as it sounds; there are multiple entries for the shared field in both tables. While somewhat contrived, we can see this through the example below, joining the offices and customers table based on the state field. For example, there are 2 offices in MA and 9 customers in MA. Joining the two tables by state will result in 18 rows associated with MA; one for each customer combined with the first office, and then another for each customer combined with the second option. This is not a particularly useful join without applying some additional aggregations or pivots, but can also demonstrate how a poorly written query can go wrong. For example, if there are a large number of occurences in both tables, such as tens of thousands, then a many-to-many join could result in billions of resulting rows. Such ill conceived joins can cause severe load can be put on the database causing slow execution time, and potentially even tying up database resources for other analysts who may be using the system.
 
 
 ```python
-cur.execute("""select * from employees
-                        join offices
-                        using(officeCode)
+cur.execute("""select * from offices
                         join customers
-                        using(city);""")
+                        using(state);""")
 df = pd.DataFrame(cur.fetchall())
 df.columns = [i[0] for i in cur.description]
 print('Number of results:', len(df))
 df.head()
 ```
 
-    Number of results: 45
+    Number of results: 254
 
 
 
@@ -780,304 +777,23 @@ df.head()
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>employeeNumber</th>
-      <th>lastName</th>
-      <th>firstName</th>
-      <th>extension</th>
-      <th>email</th>
       <th>officeCode</th>
-      <th>reportsTo</th>
-      <th>jobTitle</th>
       <th>city</th>
       <th>phone</th>
+      <th>addressLine1</th>
+      <th>addressLine2</th>
+      <th>state</th>
+      <th>country</th>
+      <th>postalCode</th>
+      <th>territory</th>
+      <th>customerNumber</th>
       <th>...</th>
       <th>contactLastName</th>
       <th>contactFirstName</th>
       <th>phone</th>
       <th>addressLine1</th>
       <th>addressLine2</th>
-      <th>state</th>
-      <th>postalCode</th>
-      <th>country</th>
-      <th>salesRepEmployeeNumber</th>
-      <th>creditLimit</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>1002</td>
-      <td>Murphy</td>
-      <td>Diane</td>
-      <td>x5800</td>
-      <td>dmurphy@classicmodelcars.com</td>
-      <td>1</td>
-      <td></td>
-      <td>President</td>
-      <td>San Francisco</td>
-      <td>+1 650 219 4782</td>
-      <td>...</td>
-      <td>Murphy</td>
-      <td>Julie</td>
-      <td>6505555787</td>
-      <td>5557 North Pendale Street</td>
-      <td></td>
-      <td>CA</td>
-      <td>94217</td>
-      <td>USA</td>
-      <td>1165</td>
-      <td>64600.00</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>1002</td>
-      <td>Murphy</td>
-      <td>Diane</td>
-      <td>x5800</td>
-      <td>dmurphy@classicmodelcars.com</td>
-      <td>1</td>
-      <td></td>
-      <td>President</td>
-      <td>San Francisco</td>
-      <td>+1 650 219 4782</td>
-      <td>...</td>
-      <td>Brown</td>
-      <td>Julie</td>
-      <td>6505551386</td>
-      <td>7734 Strong St.</td>
-      <td></td>
-      <td>CA</td>
-      <td>94217</td>
-      <td>USA</td>
-      <td>1165</td>
-      <td>105000.00</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>1056</td>
-      <td>Patterson</td>
-      <td>Mary</td>
-      <td>x4611</td>
-      <td>mpatterso@classicmodelcars.com</td>
-      <td>1</td>
-      <td>1002</td>
-      <td>VP Sales</td>
-      <td>San Francisco</td>
-      <td>+1 650 219 4782</td>
-      <td>...</td>
-      <td>Murphy</td>
-      <td>Julie</td>
-      <td>6505555787</td>
-      <td>5557 North Pendale Street</td>
-      <td></td>
-      <td>CA</td>
-      <td>94217</td>
-      <td>USA</td>
-      <td>1165</td>
-      <td>64600.00</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>1056</td>
-      <td>Patterson</td>
-      <td>Mary</td>
-      <td>x4611</td>
-      <td>mpatterso@classicmodelcars.com</td>
-      <td>1</td>
-      <td>1002</td>
-      <td>VP Sales</td>
-      <td>San Francisco</td>
-      <td>+1 650 219 4782</td>
-      <td>...</td>
-      <td>Brown</td>
-      <td>Julie</td>
-      <td>6505551386</td>
-      <td>7734 Strong St.</td>
-      <td></td>
-      <td>CA</td>
-      <td>94217</td>
-      <td>USA</td>
-      <td>1165</td>
-      <td>105000.00</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>1076</td>
-      <td>Firrelli</td>
-      <td>Jeff</td>
-      <td>x9273</td>
-      <td>jfirrelli@classicmodelcars.com</td>
-      <td>1</td>
-      <td>1002</td>
-      <td>VP Marketing</td>
-      <td>San Francisco</td>
-      <td>+1 650 219 4782</td>
-      <td>...</td>
-      <td>Murphy</td>
-      <td>Julie</td>
-      <td>6505555787</td>
-      <td>5557 North Pendale Street</td>
-      <td></td>
-      <td>CA</td>
-      <td>94217</td>
-      <td>USA</td>
-      <td>1165</td>
-      <td>64600.00</td>
-    </tr>
-  </tbody>
-</table>
-<p>5 rows × 28 columns</p>
-</div>
-
-
-
-
-```python
-cur.execute("""select * from employees;""")
-df = pd.DataFrame(cur.fetchall())
-df.columns = [i[0] for i in cur.description]
-print('Number of results:', len(df))
-df.head()
-```
-
-    Number of results: 23
-
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>employeeNumber</th>
-      <th>lastName</th>
-      <th>firstName</th>
-      <th>extension</th>
-      <th>email</th>
-      <th>officeCode</th>
-      <th>reportsTo</th>
-      <th>jobTitle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>1002</td>
-      <td>Murphy</td>
-      <td>Diane</td>
-      <td>x5800</td>
-      <td>dmurphy@classicmodelcars.com</td>
-      <td>1</td>
-      <td></td>
-      <td>President</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>1056</td>
-      <td>Patterson</td>
-      <td>Mary</td>
-      <td>x4611</td>
-      <td>mpatterso@classicmodelcars.com</td>
-      <td>1</td>
-      <td>1002</td>
-      <td>VP Sales</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>1076</td>
-      <td>Firrelli</td>
-      <td>Jeff</td>
-      <td>x9273</td>
-      <td>jfirrelli@classicmodelcars.com</td>
-      <td>1</td>
-      <td>1002</td>
-      <td>VP Marketing</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>1088</td>
-      <td>Patterson</td>
-      <td>William</td>
-      <td>x4871</td>
-      <td>wpatterson@classicmodelcars.com</td>
-      <td>6</td>
-      <td>1056</td>
-      <td>Sales Manager (APAC)</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>1102</td>
-      <td>Bondur</td>
-      <td>Gerard</td>
-      <td>x5408</td>
-      <td>gbondur@classicmodelcars.com</td>
-      <td>4</td>
-      <td>1056</td>
-      <td>Sale Manager (EMEA)</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-
-```python
-cur.execute("""select * from customers;""")
-df = pd.DataFrame(cur.fetchall())
-df.columns = [i[0] for i in cur.description]
-print('Number of results:', len(df))
-df.head()
-```
-
-    Number of results: 122
-
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>customerNumber</th>
-      <th>customerName</th>
-      <th>contactLastName</th>
-      <th>contactFirstName</th>
-      <th>phone</th>
-      <th>addressLine1</th>
-      <th>addressLine2</th>
       <th>city</th>
-      <th>state</th>
       <th>postalCode</th>
       <th>country</th>
       <th>salesRepEmployeeNumber</th>
@@ -1087,90 +803,143 @@ df.head()
   <tbody>
     <tr>
       <th>0</th>
-      <td>103</td>
-      <td>Atelier graphique</td>
-      <td>Schmitt</td>
-      <td>Carine</td>
-      <td>40.32.2555</td>
-      <td>54, rue Royale</td>
+      <td>1</td>
+      <td>San Francisco</td>
+      <td>+1 650 219 4782</td>
+      <td>100 Market Street</td>
+      <td>Suite 300</td>
+      <td>CA</td>
+      <td>USA</td>
+      <td>94080</td>
+      <td>NA</td>
+      <td>124</td>
+      <td>...</td>
+      <td>Nelson</td>
+      <td>Susan</td>
+      <td>4155551450</td>
+      <td>5677 Strong St.</td>
       <td></td>
-      <td>Nantes</td>
-      <td></td>
-      <td>44000</td>
-      <td>France</td>
-      <td>1370</td>
-      <td>21000.00</td>
+      <td>San Rafael</td>
+      <td>97562</td>
+      <td>USA</td>
+      <td>1165</td>
+      <td>210500.00</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>112</td>
-      <td>Signal Gift Stores</td>
-      <td>King</td>
-      <td>Jean</td>
-      <td>7025551838</td>
-      <td>8489 Strong St.</td>
+      <td>1</td>
+      <td>San Francisco</td>
+      <td>+1 650 219 4782</td>
+      <td>100 Market Street</td>
+      <td>Suite 300</td>
+      <td>CA</td>
+      <td>USA</td>
+      <td>94080</td>
+      <td>NA</td>
+      <td>129</td>
+      <td>...</td>
+      <td>Murphy</td>
+      <td>Julie</td>
+      <td>6505555787</td>
+      <td>5557 North Pendale Street</td>
       <td></td>
-      <td>Las Vegas</td>
-      <td>NV</td>
-      <td>83030</td>
+      <td>San Francisco</td>
+      <td>94217</td>
+      <td>USA</td>
+      <td>1165</td>
+      <td>64600.00</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1</td>
+      <td>San Francisco</td>
+      <td>+1 650 219 4782</td>
+      <td>100 Market Street</td>
+      <td>Suite 300</td>
+      <td>CA</td>
+      <td>USA</td>
+      <td>94080</td>
+      <td>NA</td>
+      <td>161</td>
+      <td>...</td>
+      <td>Hashimoto</td>
+      <td>Juri</td>
+      <td>6505556809</td>
+      <td>9408 Furth Circle</td>
+      <td></td>
+      <td>Burlingame</td>
+      <td>94217</td>
+      <td>USA</td>
+      <td>1165</td>
+      <td>84600.00</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1</td>
+      <td>San Francisco</td>
+      <td>+1 650 219 4782</td>
+      <td>100 Market Street</td>
+      <td>Suite 300</td>
+      <td>CA</td>
+      <td>USA</td>
+      <td>94080</td>
+      <td>NA</td>
+      <td>205</td>
+      <td>...</td>
+      <td>Young</td>
+      <td>Julie</td>
+      <td>6265557265</td>
+      <td>78934 Hillside Dr.</td>
+      <td></td>
+      <td>Pasadena</td>
+      <td>90003</td>
       <td>USA</td>
       <td>1166</td>
-      <td>71800.00</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>114</td>
-      <td>Australian Collectors, Co.</td>
-      <td>Ferguson</td>
-      <td>Peter</td>
-      <td>03 9520 4555</td>
-      <td>636 St Kilda Road</td>
-      <td>Level 3</td>
-      <td>Melbourne</td>
-      <td>Victoria</td>
-      <td>3004</td>
-      <td>Australia</td>
-      <td>1611</td>
-      <td>117300.00</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>119</td>
-      <td>La Rochelle Gifts</td>
-      <td>Labrune</td>
-      <td>Janine</td>
-      <td>40.67.8555</td>
-      <td>67, rue des Cinquante Otages</td>
-      <td></td>
-      <td>Nantes</td>
-      <td></td>
-      <td>44000</td>
-      <td>France</td>
-      <td>1370</td>
-      <td>118200.00</td>
+      <td>90700.00</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>121</td>
-      <td>Baane Mini Imports</td>
-      <td>Bergulfsen</td>
-      <td>Jonas</td>
-      <td>07-98 9555</td>
-      <td>Erling Skakkes gate 78</td>
+      <td>1</td>
+      <td>San Francisco</td>
+      <td>+1 650 219 4782</td>
+      <td>100 Market Street</td>
+      <td>Suite 300</td>
+      <td>CA</td>
+      <td>USA</td>
+      <td>94080</td>
+      <td>NA</td>
+      <td>219</td>
+      <td>...</td>
+      <td>Young</td>
+      <td>Mary</td>
+      <td>3105552373</td>
+      <td>4097 Douglas Av.</td>
       <td></td>
-      <td>Stavern</td>
-      <td></td>
-      <td>4110</td>
-      <td>Norway</td>
-      <td>1504</td>
-      <td>81700.00</td>
+      <td>Glendale</td>
+      <td>92561</td>
+      <td>USA</td>
+      <td>1166</td>
+      <td>11000.00</td>
     </tr>
   </tbody>
 </table>
+<p>5 rows × 21 columns</p>
 </div>
+
+
+
+
+```python
+len(df[df.state=='MA'])
+```
+
+
+
+
+    18
 
 
 
 ## Summary
 
-In this section, you expanded your Join knowledge to One-to-Many and Many-to-many Joins!
+In this section, you expanded your join knowledge to One-to-Many and Many-to-many joins!

@@ -9,7 +9,7 @@ Previously, you've learned about the typical case where one joins on a primary o
 
 You will be able to:
 
-- Explain why join Tables are needed in Many-to-Many relationships
+* Explain one-to-many and many-to-many joins as well as implications for the size of query results
 
 ## One-to-Many and Many-to-Many relationships
 

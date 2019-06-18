@@ -21,7 +21,7 @@ For example, let's say you have another table 'restaurants' that has many column
 
 If you had 2 offices for Boston, and 513 restaurants, your join would have 1026 rows for Boston; 513 for each restaurant along with the first office and 513 for each restaurant with the second office. Three offices in Boston would similarly produce 1539 rows; one for each unique combination of restaurants and offices. This is where you should be particularly careful of many to many joins as the resulting set size can explode drastically potentially consuming vast amounts of memory and other resources.  
 
-<img src='Database-Schema.png' width=550>
+<img src='images/Database-Schema.png' width=550>
 
 ## Connecting to the Database
 

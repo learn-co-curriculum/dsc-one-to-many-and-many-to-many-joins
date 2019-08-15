@@ -3,7 +3,7 @@
 
 ## Introduction
 
-Previously, you've learned about the typical case where one joins on a primary or foreign key. In this section, you'll explore other types of joins using One-to-Many and Many-to-many relationships!
+Previously, you learned about the typical case where one joins on a primary or foreign key. In this section, you'll explore other types of joins using One-to-Many and Many-to-many relationships!
 
 ## Objectives
 
@@ -13,11 +13,11 @@ You will be able to:
 
 ## One-to-Many and Many-to-Many relationships
 
-So far, you've seen a couple of different kinds of join statements: left joins and inner joins. Both of these refer to the way in which you would like to define your joins based on the tables and their shared information. Another perspective on this is the number of matches between the tables based on your defined links with the keywords *on* or *using*.
+So far, you've seen a couple of different kinds of join statements: `LEFT JOIN` and `INNER JOIN` (aka, `JOIN`). Both of these refer to the way in which you would like to define your join based on the tables and their shared information. Another perspective on this is the number of matches between the tables based on your defined links with the keywords `ON` or `USING`.
   
-You have also seen the typical case where one joins on a primary or foreign key. For example, when you join on customerID or employeeID, this value should be unique to that table. As such, your joins have been very similar to using a dictionary to find additional information associated with that record. In cases where there are multiple entries, in either table, for the field you are joining on, you will similarly be given multiple rows in your resulting view, one for each of these entries.  
+You have also seen the typical case where one joins on a primary or foreign key. For example, when you join on `customerID` or `employeeID`, this value should be unique to that table. As such, your joins have been very similar to using a dictionary to find additional information associated with that record. In cases where there are multiple entries in either table for the field (column) you are joining on, you will similarly be given multiple rows in your resulting view, one for each of these entries.  
   
-For example, let's say you have another table 'restaurants' that has many columns including *name*, *city*, and *rating*. If you were to join this table with the offices table using the shared city column, you might get some unexpected behavior. That is, in the office table, there is only one office per city. However, because there is apt to be more than one restaurant for each of these cities in your second table, you will get unique combinations of Offices and Restaurants from your join. If there are 513 restaurants for Boston in your restaurant table and 1 office for Boston, your joined table will have each of these 513 rows, one for each restaurant along with the one office.
+For example, let's say you have another table 'restaurants' that has many columns including *name*, *city*, and *rating*. If you were to join this 'restaurants' table with the offices table using the shared city column, you might get some unexpected behavior. That is, in the office table, there is only one office per city. However, because there will likely be more than one restaurant for each of these cities in your second table, you will get unique combinations of Offices and Restaurants from your join. If there are 513 restaurants for Boston in your restaurant table and 1 office for Boston, your joined table will have each of these 513 rows, one for each restaurant along with the one office.
 
 If you had 2 offices for Boston, and 513 restaurants, your join would have 1026 rows for Boston; 513 for each restaurant along with the first office and 513 for each restaurant with the second office. Three offices in Boston would similarly produce 1539 rows; one for each unique combination of restaurants and offices. This is where you should be particularly careful of many to many joins as the resulting set size can explode drastically potentially consuming vast amounts of memory and other resources.  
 
@@ -33,17 +33,17 @@ import pandas as pd
 
 
 ```python
-conn = sqlite3.connect('data.sqlite', detect_types=sqlite3.PARSE_COLNAMES)
+conn = sqlite3.connect('data.sqlite')
 cur = conn.cursor()
 ```
 
-## Checking Sizes of Resulting Joins...
+## Checking Sizes of Resulting Joins
 
-### The original tables...
+### The original tables:
 
 
 ```python
-cur.execute('select * from offices;')
+cur.execute('SELECT * FROM offices;')
 df = pd.DataFrame(cur.fetchall())
 df.columns = [i[0] for i in cur.description]
 print('Number of results:', len(df))
@@ -154,7 +154,7 @@ df.head()
 
 
 ```python
-cur.execute('select * from employees;')
+cur.execute('SELECT * FROM employees;')
 df = pd.DataFrame(cur.fetchall())
 df.columns = [i[0] for i in cur.description]
 print('Number of results:', len(df))
@@ -261,7 +261,7 @@ df.head()
 
 
 ```python
-cur.execute('select * from offices join employees using(officeCode);')
+cur.execute('SELECT * FROM offices JOIN employees USING(officeCode);')
 df = pd.DataFrame(cur.fetchall())
 df.columns = [i[0] for i in cur.description]
 print('Number of results:', len(df))
@@ -413,11 +413,13 @@ df.head()
 
 
 ### A One-to-Many Join
-Here you join products with product lines. There are only a few product lines that will be matched to each product. As a result, the product line descriptions will be repeated in your resulting view.
+Here, we'll join the `products` table with the `productlines` table. There are only a few product lines that will be matched to each product. As a result, the product line descriptions will be repeated in your resulting view.
+
+Let's take a look at the individual `products` and `productlines` tables first.
 
 
 ```python
-cur.execute('select * from products;')
+cur.execute('SELECT * FROM products;')
 df = pd.DataFrame(cur.fetchall())
 df.columns = [i[0] for i in cur.description]
 print('Number of results:', len(df))
@@ -528,7 +530,7 @@ df.head()
 
 
 ```python
-cur.execute('select * from productlines;')
+cur.execute('SELECT * FROM productlines;')
 df = pd.DataFrame(cur.fetchall())
 df.columns = [i[0] for i in cur.description]
 print('Number of results:', len(df))
@@ -607,11 +609,14 @@ df.head()
 
 
 
+#### Here is the One-to-Many Join:
+
 
 ```python
-cur.execute("""select * from products
-                      join productlines
-                      using(productLine);""")
+cur.execute("""SELECT * 
+               FROM products
+               JOIN productlines
+               USING(productLine);""")
 df = pd.DataFrame(cur.fetchall())
 df.columns = [i[0] for i in cur.description]
 print('Number of results:', len(df))
@@ -740,13 +745,13 @@ df.head()
 
 ### A Many-to-Many Join
 
-A many-to-many join is as it sounds; there are multiple entries for the shared field in both tables. While somewhat contrived, we can see this through the example below, joining the offices and customers table based on the state field. For example, there are 2 offices in MA and 9 customers in MA. Joining the two tables by state will result in 18 rows associated with MA; one for each customer combined with the first office, and then another for each customer combined with the second option. This is not a particularly useful join without applying some additional aggregations or pivots, but can also demonstrate how a poorly written query can go wrong. For example, if there are a large number of occurences in both tables, such as tens of thousands, then a many-to-many join could result in billions of resulting rows. Such ill conceived joins can cause severe load can be put on the database causing slow execution time, and potentially even tying up database resources for other analysts who may be using the system.
+A many-to-many join is as it sounds; there are multiple entries for the shared field in both tables. While somewhat contrived, we can see this through the example below, joining the offices and customers table based on the state field. For example, there are 2 offices in MA and 9 customers in MA. Joining the two tables by state will result in 18 rows associated with MA; one for each customer combined with the first office, and then another for each customer combined with the second option. This is not a particularly useful join without applying some additional aggregations or pivots, but can also demonstrate how a poorly written query can go wrong. For example, if there are a large number of occurrences in both tables, such as tens of thousands, then a many-to-many join could result in billions of resulting rows. Poorly conceived joins can cause a severe load to be put on the database, causing slow execution time and potentially even tying up database resources for other analysts who may be using the system.
 
 
 ```python
-cur.execute("""select * from offices
-                        join customers
-                        using(state);""")
+cur.execute("""SELECT * FROM offices
+                        JOIN customers
+                        USING(state);""")
 df = pd.DataFrame(cur.fetchall())
 df.columns = [i[0] for i in cur.description]
 print('Number of results:', len(df))

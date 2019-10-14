@@ -3,13 +3,14 @@
 
 ## Introduction
 
-Previously, you learned about the typical case where one joins on a primary or foreign key. In this section, you'll explore other types of joins using One-to-Many and Many-to-many relationships!
+Previously, you learned about the typical case where one joins on a primary or foreign key. In this section, you'll explore other types of joins using one-to-many and many-to-many relationships!
 
 ## Objectives
 
 You will be able to:
 
 * Explain one-to-many and many-to-many joins as well as implications for the size of query results
+* Query data using one-to-many and many-to-many joins
 
 ## One-to-Many and Many-to-Many relationships
 
@@ -947,4 +948,4 @@ len(df[df.state=='MA'])
 
 ## Summary
 
-In this section, you expanded your join knowledge to One-to-Many and Many-to-many joins!
+In this section, you expanded your join knowledge to one-to-many and many-to-many joins!

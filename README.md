@@ -829,7 +829,7 @@ df.head()
       <td>97562</td>
       <td>USA</td>
       <td>1165</td>
-      <td>210500.00</td>
+      <td>210500</td>
     </tr>
     <tr>
       <th>1</th>
@@ -853,7 +853,7 @@ df.head()
       <td>94217</td>
       <td>USA</td>
       <td>1165</td>
-      <td>64600.00</td>
+      <td>64600</td>
     </tr>
     <tr>
       <th>2</th>
@@ -877,7 +877,7 @@ df.head()
       <td>94217</td>
       <td>USA</td>
       <td>1165</td>
-      <td>84600.00</td>
+      <td>84600</td>
     </tr>
     <tr>
       <th>3</th>
@@ -901,7 +901,7 @@ df.head()
       <td>90003</td>
       <td>USA</td>
       <td>1166</td>
-      <td>90700.00</td>
+      <td>90700</td>
     </tr>
     <tr>
       <th>4</th>
@@ -925,7 +925,7 @@ df.head()
       <td>92561</td>
       <td>USA</td>
       <td>1166</td>
-      <td>11000.00</td>
+      <td>11000</td>
     </tr>
   </tbody>
 </table>
